@@ -94,7 +94,7 @@ def sample(a, b, mu = 0, sigma = 1.0):
                 return -x * sigma + mu
 
             
-            
-
-            
+# def test():
+#     N = 1000
+#     for i in range(N):
         
