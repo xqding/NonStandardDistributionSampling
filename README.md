@@ -1,1 +1,2 @@
-## This is a collection of functions for sampling from non-standard distributions
+## Python Module for Sampling from Non-standard Distributions
+* Truncated Normal Distribution
