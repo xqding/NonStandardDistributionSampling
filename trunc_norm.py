@@ -1,13 +1,29 @@
 __author__ = "Xinqiang Ding <xqding@umich.edu>"
 __date__ = "2017/03/03 15:57:01"
 
+""" Drawing samples from truncated 1-d normal distribution.
+
+The truncated 1-d normal distribution can be restricated in interval (-inf, a],
+[a, b] or [a, +inf]. The method used here is based on the paper "Simulation of 
+truncated normal variables" by Christian P. Robert.
+"""
+
 import numpy as np
 
 def _sample_right(a, mu = 0, sigma = 1.0):
-    """
-    draw a smple from the truncated normal distribution in the interval [a, +inf]
+    """Draw a smple from right open interval [a, +np.inf].
+
+    Args:
+        a: left boundary of the interval. It can be any number or -np.inf
+        mu: mean value of the normal distribution.
+        sigma: standard derivation of the normal distribution.
+
+    Returns:
+        A sample from the truncated normal distribution.
+
+    Raises:
+        ValueError: the error occurs when a = np.inf
     """    
-    ## normalize
     a = (a - mu) / sigma
 
     ## sampling
@@ -18,7 +34,7 @@ def _sample_right(a, mu = 0, sigma = 1.0):
     elif a == -np.inf:
         return np.random.normal()
     elif a == np.inf:
-        raise ValueError("The first parameter is Inf")
+        raise ValueError("The first parameter is invalid")
     else:
         alpha = 0.5 * (a + np.sqrt(a**2 + 4))
         while True:
@@ -29,16 +45,40 @@ def _sample_right(a, mu = 0, sigma = 1.0):
     return x * sigma + mu
 
 def _sample_left(b, mu = 0, sigma = 1.0):
-    """
-    draw a smple from the truncated normal distribution in the interval [-inf, b]
-    """
+    """Draw a smple from left open interval (-np.inf, b).
+
+    Args:
+        b: right boundary of the interval. It can be any number or +np.inf
+        mu: mean value of the normal distribution.
+        sigma: standard derivation of the normal distribution.
+
+    Returns:
+        A sample from the truncated normal distribution.
+
+    Raises:
+        ValueError: the error occurs when b = -np.inf
+    """    
     return -sample_right(-b, mu = mu, sigma = sigma)
     
+
 def sample(a, b, mu = 0, sigma = 1.0):
+    """Draw a smple from right open interval (a, b).
+
+    Args:
+        a: left boundary of the interval. It can be any number or -np.inf
+        b: right boundary of the interval. It can be any number or +np.inf
+        mu: mean value of the normal distribution.
+        sigma: standard derivation of the normal distribution.
+
+    Returns:
+        A sample from the truncated normal distribution.
+
+    Raises:
+        ValueError: the error occurs when a = np.inf or b = -np.inf or a >= b
     """
-    draw a smple from the truncated normal distribution in the interval [a, b]
-    """
-    assert(a <= b)
+    if a >= b:
+        raise ValueError("The left boundary of truncated interval is larger than \
+        the right boundary")
     if a == -np.inf:
         return _sample_left(b, mu = mu, sigma = sigma)
     elif b == np.inf:
@@ -48,7 +88,6 @@ def sample(a, b, mu = 0, sigma = 1.0):
     elif b == -np.inf:
         raise ValueError("The right boudnary of the interval is -Inf")
     else:
-        ## normalize
         a = (a - mu) / sigma
         b = (b - mu) / sigma
 
@@ -92,9 +131,3 @@ def sample(a, b, mu = 0, sigma = 1.0):
                 return x * sigma + mu
             else:
                 return -x * sigma + mu
-
-            
-# def test():
-#     N = 1000
-#     for i in range(N):
-        
