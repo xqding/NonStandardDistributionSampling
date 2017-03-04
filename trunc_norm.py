@@ -77,8 +77,8 @@ def sample(a, b, mu = 0, sigma = 1.0):
         ValueError: the error occurs when a = np.inf or b = -np.inf or a >= b
     """
     if a >= b:
-        raise ValueError("The left boundary of truncated interval is larger than \
-        the right boundary")
+        raise ValueError("The left boundary of truncated interval is larger \
+        than the right boundary")
     if a == -np.inf:
         return _sample_left(b, mu = mu, sigma = sigma)
     elif b == np.inf:
@@ -113,7 +113,8 @@ def sample(a, b, mu = 0, sigma = 1.0):
                 low = np.abs(b)
                 up = np.abs(a)
 
-            cutoff = low + 2*np.sqrt(np.exp(1)) / (low + np.sqrt(low**2 + 4)) * np.exp((low**2 - low*np.sqrt(low**2+4))/4)
+            cutoff = low + 2*np.sqrt(np.exp(1)) / (low + np.sqrt(low**2 + 4)) \
+                     * np.exp((low**2 - low*np.sqrt(low**2+4))/4)
 
             ## when the interval is big enough
             if up > cutoff:
