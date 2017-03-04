@@ -5,7 +5,7 @@ __date__ = "2017/03/03 15:57:01"
 
 The truncated 1-d normal distribution can be restricated in interval (-inf, a],
 [a, b] or [a, +inf]. The method used here is based on the paper "Simulation of 
-truncated normal variables" by Christian P. Robert.
+truncated normal variables" by Christian P. Robert (doi:10.1007/BF00143942)
 """
 
 import numpy as np
@@ -131,3 +131,4 @@ def sample(a, b, mu = 0, sigma = 1.0):
                 return x * sigma + mu
             else:
                 return -x * sigma + mu
+
