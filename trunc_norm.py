@@ -9,6 +9,7 @@ truncated normal variables" by Christian P. Robert (doi:10.1007/BF00143942)
 """
 
 import numpy as np
+import scipy.special as special
 
 def _sample_right(a, mu = 0, sigma = 1.0):
     """Draw a smple from right open interval [a, +np.inf].
@@ -133,3 +134,56 @@ def sample(a, b, mu = 0, sigma = 1.0):
             else:
                 return -x * sigma + mu
 
+def pdf(x, a, b, mu = 0, sigma = 1):
+    """ Probablity density function of the truncated normal distribution
+    on the interval [a, b].
+    
+    Args:
+        x: a value between a and b to calculate its pdf.
+        a: the left boundary of the truncated normal distribution.
+        b: the right boundary of the truncated normal distribution.
+        mu: the mean value.
+        sigma: the standard derivation.
+
+    Returns:
+        The probablity density at point x
+
+    Raises:
+        ValueError: the error is raised the value of x, a, and b are invalid.
+    """
+    if a >= b:
+        raise ValueError("The interval's left boundary is larger than \
+        the right boundary ")
+    if x < a or x > b:
+        raise ValueError("The query position is outside of the interval")
+    if a == np.inf:
+        raise ValueError("The interval's left boundary can not be np.inf")
+    if b == -np.inf:
+        raise ValueError("The interval's right boundary can not be -np.inf")
+            
+    x = (x - mu) / sigma
+    a = (a - mu) / sigma
+    b = (b - mu) / sigma
+
+    if a * b <= 0:
+        area = special.ndtr(b) - special.ndtr(a)
+        p = 1 / np.sqrt(2*np.pi) * np.exp(-0.5*x**2) / area
+        return p
+    else:
+        x = -np.abs(x)
+        if a > 0:            
+            low = -np.abs(b)
+            up = -np.abs(a)
+        else:
+            low = -np.abs(a)
+            up = -np.abs(b)
+            
+        low_log_area = special.log_ndtr(low)
+        up_log_area = special.log_ndtr(up)
+
+        low_log_area += 0.5 * up**2
+        up_log_area += 0.5 * up**2
+
+        area = np.exp(up_log_area) - np.exp(low_log_area)
+        p = 1 / np.sqrt(2*np.pi) * np.exp(-0.5*(x**2 - up**2)) / area
+        return p
